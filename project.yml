@@ -1,0 +1,72 @@
+name: MacSpa
+options:
+  bundleIdPrefix: com.macspa
+  deploymentTarget:
+    macOS: "15.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+    MACOSX_DEPLOYMENT_TARGET: "15.0"
+    ENABLE_HARDENED_RUNTIME: NO
+  configs:
+    Debug:
+      DEBUG_INFORMATION_FORMAT: dwarf
+    Release:
+      DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+
+targets:
+  MacSpa:
+    type: application
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: MacSpa
+        excludes:
+          - Resources/Info.plist
+          - Resources/MacSpa.entitlements
+    info:
+      path: MacSpa/Resources/Info.plist
+      properties:
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.macspa.app
+        PRODUCT_NAME: MacSpa
+        SWIFT_VERSION: 6.0
+        GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  MacSpaTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Tests
+    dependencies:
+      - target: MacSpa
+    settings:
+      base:
+        SWIFT_VERSION: 6.0
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.macspa.app.tests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/MacSpa.app/Contents/MacOS/MacSpa"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+
+schemes:
+  MacSpa:
+    build:
+      targets:
+        MacSpa: all
+        MacSpaTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - MacSpaTests
+    archive:
+      config: Release
